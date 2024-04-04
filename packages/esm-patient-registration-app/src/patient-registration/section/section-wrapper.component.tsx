@@ -8,9 +8,10 @@ import { Section } from './section.component';
 export interface SectionWrapperProps {
   sectionDefinition: SectionDefinition;
   index: number;
+  button?: React.ReactNode;
 }
 
-export const SectionWrapper = ({ sectionDefinition, index }: SectionWrapperProps) => {
+export const SectionWrapper = ({ sectionDefinition, index, button }: SectionWrapperProps) => {
   const { t } = useTranslation();
 
   /*
@@ -35,6 +36,8 @@ export const SectionWrapper = ({ sectionDefinition, index }: SectionWrapperProps
           <Section sectionDefinition={sectionDefinition} />
         </Tile>
       </div>
+      {/* Render the button if it exists */}
+      {button && <div className="button-container">{button}</div>}
     </div>
   );
 };

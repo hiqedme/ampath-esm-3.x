@@ -28,6 +28,7 @@ import BeforeSavePrompt from './before-save-prompt';
 import styles from './patient-registration.scss';
 import { TextInput } from '@carbon/react';
 import { ClientRegistry } from '../patient-verification/client-registry.component';
+import PatientMatchModalComponent from '../patient-verification/patient-match-component';
 
 let exportedInitialFormValuesForTesting = {} as FormValues;
 
@@ -55,6 +56,15 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
   const savePatientTransactionManager = useRef(new SavePatientTransactionManager());
   const fieldDefinition = config?.fieldDefinitions?.filter((def) => def.type === 'address');
   const validationSchema = getValidationSchema(config);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleButtonClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     exportedInitialFormValuesForTesting = initialFormValues;
@@ -215,11 +225,21 @@ export const PatientRegistration: React.FC<PatientRegistrationProps> = ({ savePa
                 }}>
                 <ClientRegistry initialFormValues={initialFormValues} setInitialFormValues={setInitialFormValues} />
                 {sections.map((section, index) => (
-                  <SectionWrapper
-                    key={`registration-section-${section.id}`}
-                    sectionDefinition={section}
-                    index={index}
-                  />
+                  <div key={`registration-section-${section.id}`}>
+                    <SectionWrapper
+                      sectionDefinition={section}
+                      index={index}
+                      button={
+                        section.id === 'demographics-custom' ? (
+                          <Button className={styles.nextButton} kind="tertiary" onClick={handleButtonClick}>
+                            Next
+                          </Button>
+                        ) : null
+                      }
+                    />
+                    {/* Render PatientMatchModalComponent within the loop */}
+                    {isModalOpen && <PatientMatchModalComponent onClose={handleModalClose} />}
+                  </div>
                 ))}
               </PatientRegistrationContext.Provider>
             </div>
